@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class User
      * @ORM\Column(type="date")
      */
     private $date;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Champion::class, mappedBy="User")
+     */
+    private $champions;
+
+    public function __construct()
+    {
+        $this->champions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,6 +115,33 @@ class User
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Champion[]
+     */
+    public function getChampions(): Collection
+    {
+        return $this->champions;
+    }
+
+    public function addChampion(Champion $champion): self
+    {
+        if (!$this->champions->contains($champion)) {
+            $this->champions[] = $champion;
+            $champion->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChampion(Champion $champion): self
+    {
+        if ($this->champions->removeElement($champion)) {
+            $champion->removeUser($this);
+        }
 
         return $this;
     }

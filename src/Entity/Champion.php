@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ChampionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,6 +38,16 @@ class Champion
      * @ORM\Column(type="string", length=255)
      */
     private $competance;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="champions")
+     */
+    private $User;
+
+    public function __construct()
+    {
+        $this->User = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,5 +102,29 @@ class Champion
         return $this;
 
 
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUser(): Collection
+    {
+        return $this->User;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->User->contains($user)) {
+            $this->User[] = $user;
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        $this->User->removeElement($user);
+
+        return $this;
     }
 }
