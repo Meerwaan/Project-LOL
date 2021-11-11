@@ -18,6 +18,9 @@ class ChampionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Champion::class);
     }
+    public function GetAll(){
+        return $this->findAll();
+    }
 
     // /**
     //  * @return Champion[] Returns an array of Champion objects

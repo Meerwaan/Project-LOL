@@ -44,10 +44,12 @@ class Champion
      */
     private $User;
 
-    public function __construct()
-    {
-        $this->User = new ArrayCollection();
-    }
+    /**
+     * @ORM\Column(type="string", length=400)
+     */
+    private $image;
+
+
 
     public function getId(): ?int
     {
@@ -127,4 +129,18 @@ class Champion
 
         return $this;
     }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+
 }

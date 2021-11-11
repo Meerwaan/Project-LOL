@@ -7,6 +7,9 @@
     <div class="grille">
         <div class="card">
             <div class="pic">
+                {% for item in allChamp %}
+                    <p>{{ item.name }}</p>
+                {% endfor %}
                 <img src="LolProject/src/template/img/Tryndamere_0.jpeg">
                 
             </div>
