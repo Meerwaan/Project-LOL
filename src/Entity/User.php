@@ -2,147 +2,116 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Entity
+ * @UniqueEntity(fields="email", message="Email already taken")
+ * @UniqueEntity(fields="username", message="Username already taken")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $nom;
-
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $prenom;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=64, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=64, unique=true)
+     * @Assert\NotBlank()
      */
-    private $MotDePasse;
+    private $username;
 
     /**
-     * @ORM\Column(type="date")
+     * @Assert\NotBlank()
+     * @Assert\Length(max=4096)
      */
-    private $date;
+    private $plainPassword;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Champion::class, mappedBy="User")
+     * The below length depends on the "algorithm" you use for encoding
+     * the password, but this works well with bcrypt.
+     *
+     * @ORM\Column(type="string", length=64)
      */
-    private $champions;
+    private $password;
 
-    public function __construct()
-    {
-        $this->champions = new ArrayCollection();
+    /**
+     * @ORM\Column(type="array")
+     */
+    private $roles;
+
+    public function __construct() {
+        $this->roles = array('ROLE_USER');
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    // other properties and methods
 
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-
-    public function setNom(string $nom): self
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-
-    public function setPrenom(string $prenom): self
-    {
-        $this->prenom = $prenom;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail($email)
     {
         $this->email = $email;
-
-        return $this;
     }
 
-    public function getMotDePasse(): ?string
+    public function getUsername()
     {
-        return $this->MotDePasse;
+        return $this->username;
     }
 
-    public function setMotDePasse(string $MotDePasse): self
+    public function setUsername($username)
     {
-        $this->MotDePasse = $MotDePasse;
-
-        return $this;
+        $this->username = $username;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getPlainPassword()
     {
-        return $this->date;
+        return $this->plainPassword;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setPlainPassword($password)
     {
-        $this->date = $date;
-
-        return $this;
+        $this->plainPassword = $password;
     }
 
-    /**
-     * @return Collection|Champion[]
-     */
-    public function getChampions(): Collection
+    public function getPassword()
     {
-        return $this->champions;
+        return $this->password;
     }
 
-    public function addChampion(Champion $champion): self
+    public function setPassword($password)
     {
-        if (!$this->champions->contains($champion)) {
-            $this->champions[] = $champion;
-            $champion->addUser($this);
-        }
-
-        return $this;
+        $this->password = $password;
     }
 
-    public function removeChampion(Champion $champion): self
+    public function getSalt()
     {
-        if ($this->champions->removeElement($champion)) {
-            $champion->removeUser($this);
-        }
+        // The bcrypt and argon2i algorithms don't require a separate salt.
+        // You *may* need a real salt if you choose a different encoder.
+        return null;
+    }
 
-        return $this;
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    public function eraseCredentials()
+    {
     }
 }

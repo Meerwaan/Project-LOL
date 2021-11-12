@@ -13,6 +13,8 @@ class HomeController extends AbstractController
      */
     public function index(): Response
     {
+        $username = $this->getDoctrine()->getRepository(Champion::class)->findAll();
+
         return $this->render('home/index.html.twig');
     }
 }
