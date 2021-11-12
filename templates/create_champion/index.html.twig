@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Champion index{% endblock %}
+
+{% block body %}
+    <h1>Champion index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Style</th>
+                <th>Description</th>
+                <th>Competance</th>
+                <th>Image</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for champion in champions %}
+            <tr>
+                <td>{{ champion.id }}</td>
+                <td>{{ champion.name }}</td>
+                <td>{{ champion.style }}</td>
+                <td>{{ champion.description }}</td>
+                <td>{{ champion.competance }}</td>
+                <td>{{ champion.image }}</td>
+                <td>
+                    <a href="{{ path('create_champion_show', {'id': champion.id}) }}">show</a>
+                    <a href="{{ path('create_champion_edit', {'id': champion.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('create_champion_new') }}">Create new</a>
+{% endblock %}

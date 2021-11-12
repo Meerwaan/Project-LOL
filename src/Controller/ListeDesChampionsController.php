@@ -24,6 +24,11 @@ class ListeDesChampionsController extends AbstractController
         $champions = $this->getDoctrine()->getRepository(Champion::class)->findAll();
 
 
+        //var_dump($champions);
+
+
+
+
 
 
 
